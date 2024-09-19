@@ -1,5 +1,6 @@
 import React, { useCallback, useEffect, useState } from 'react'
 import Bird from '../Bird'
+import Pipe from '../Pipe'
 
 const GRAVITY = 0.5
 const JUMP_STRENGTH = -10
@@ -15,12 +16,6 @@ const styles = `
     overflow: hidden;
   }
   
-  .pipe {
-    width: ${PIPE_WIDTH}px;
-    position: absolute;
-    background-color: green;
-  }
-  
   .score {
     position: absolute;
     top: 10px;
@@ -29,10 +24,6 @@ const styles = `
     color: white;
   }
 `
-
-const Pipe = ({top, height, left}) => (
-    <div className="pipe" style={{top, height, left}}/>
-)
 
 const FlappyBird = () => {
   const [birdPosition, setBirdPosition] = useState(300)
@@ -103,8 +94,14 @@ const FlappyBird = () => {
         <style>{styles}</style>
         <div className="game-container" onClick={jump}>
           <Bird top={birdPosition}/>
-          <Pipe top={0} height={pipeHeight} left={`${pipePosition}px`}/>
           <Pipe
+              width={PIPE_WIDTH}
+              top={0}
+              height={pipeHeight}
+              left={`${pipePosition}px`}
+          />
+          <Pipe
+              width={PIPE_WIDTH}
               top={pipeHeight + PIPE_GAP}
               height={600 - pipeHeight - PIPE_GAP}
               left={`${pipePosition}px`}
