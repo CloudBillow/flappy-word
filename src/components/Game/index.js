@@ -28,11 +28,17 @@ const FlappyBird = () => {
   const newGame = () => {
     setBirdPosition(300)
     setBirdVelocity(0)
-    setPipes([{position: 400, height: 300}])
+    setPipes([{position: 300, height: 300}])
     setScore(0)
     setGameStatus(1) // 开始倒计时
     setCountdown(COUNTDOWN_TIME)
   }
+
+  useEffect(() => {
+    if (gameStatus === 0) {
+      setPipes([{position: 300, height: 300}])
+    }
+  }, [gameStatus])
 
   const jump = useCallback(() => {
     if (gameStatus === 2) {
