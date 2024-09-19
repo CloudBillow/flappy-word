@@ -1,0 +1,15 @@
+.game-container {
+  width: 400px;
+  height: 600px;
+  background-color: #4ec0ca;
+  position: relative;
+  overflow: hidden;
+}
+
+.score {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  font-size: 24px;
+  color: white;
+}
