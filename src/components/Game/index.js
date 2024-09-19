@@ -102,7 +102,7 @@ const FlappyBird = () => {
           setScore((prevScore) => prevScore + 1)
           return 400
         }
-        return prevPosition - 2
+        return prevPosition - (score ? 2 * score : 2)
       })
 
       // 碰撞检测
