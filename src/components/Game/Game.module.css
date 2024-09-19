@@ -2,8 +2,11 @@
   width: 400px;
   height: 600px;
   background-color: #4ec0ca;
-  position: relative;
+  position: absolute;
   overflow: hidden;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
 }
 
 .score {
