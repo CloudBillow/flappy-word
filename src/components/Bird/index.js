@@ -1,8 +1,13 @@
 import React from 'react'
 import styles from './Bird.module.css'
 
-const Bird = ({top}) => (
-    <div className={styles.bird} style={{top: `${top}px`, left: '50px'}}/>
+const Bird = ({letter, top}) => (
+    <div
+        className={styles.bird}
+        style={{top: `${top}px`, left: '50px'}}
+    >
+      {letter}
+    </div>
 )
 
 export default Bird

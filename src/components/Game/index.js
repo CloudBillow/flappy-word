@@ -1,4 +1,5 @@
 import React, { useCallback, useEffect, useState } from 'react'
+import styles from './Game.module.css'
 import Bird from '../Bird'
 import Pipe from '../Pipe'
 
@@ -7,25 +8,8 @@ const JUMP_STRENGTH = -10
 const PIPE_WIDTH = 50
 const PIPE_GAP = 200
 
-const styles = `
-  .game-container {
-    width: 400px;
-    height: 600px;
-    background-color: #4ec0ca;
-    position: relative;
-    overflow: hidden;
-  }
-  
-  .score {
-    position: absolute;
-    top: 10px;
-    left: 10px;
-    font-size: 24px;
-    color: white;
-  }
-`
-
 const FlappyBird = () => {
+  const [letter, setLetter] = useState('J')
   const [birdPosition, setBirdPosition] = useState(300)
   const [birdVelocity, setBirdVelocity] = useState(0)
   const [pipePosition, setPipePosition] = useState(400)
@@ -37,19 +21,20 @@ const FlappyBird = () => {
   const jump = useCallback(() => {
     if (!gameOver) {
       setBirdVelocity(JUMP_STRENGTH)
+      setLetter(String.fromCharCode(65 + Math.floor(Math.random() * 26)))
     }
   }, [gameOver])
 
   useEffect(() => {
     const handleKeyPress = (e) => {
-      if (e.code === 'Space') jump()
+      if (e.key.toLowerCase() === letter.toLowerCase()) jump()
     }
 
     document.addEventListener('keydown', handleKeyPress)
     return () => {
       document.removeEventListener('keydown', handleKeyPress)
     }
-  }, [jump])
+  }, [letter, jump])
 
   useEffect(() => {
     if (gameOver) return
@@ -91,9 +76,11 @@ const FlappyBird = () => {
 
   return (
       <>
-        <style>{styles}</style>
-        <div className="game-container" onClick={jump}>
-          <Bird top={birdPosition}/>
+        <div className={styles.gameContainer}>
+          <Bird
+              letter={letter}
+              top={birdPosition}
+          />
           <Pipe
               width={PIPE_WIDTH}
               top={0}
@@ -106,7 +93,7 @@ const FlappyBird = () => {
               height={600 - pipeHeight - PIPE_GAP}
               left={`${pipePosition}px`}
           />
-          <div className="score">{score}</div>
+          <div className={styles.score}>{score}</div>
           {gameOver && (
               <div style={{
                 position: 'absolute',
