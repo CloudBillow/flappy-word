@@ -7,24 +7,28 @@ const GRAVITY = 0.5
 const JUMP_STRENGTH = -10
 const PIPE_WIDTH = 50
 const PIPE_GAP = 200
+const PIPE_SPACING = 300 // 管道之间的水平间距
 const COUNTDOWN_TIME = 3 // 倒计时3秒
 
 const FlappyBird = () => {
   const [letter, setLetter] = useState(String.fromCharCode(65 + Math.floor(Math.random() * 26)))
   const [birdPosition, setBirdPosition] = useState(300)
   const [birdVelocity, setBirdVelocity] = useState(0)
-  const [pipePosition, setPipePosition] = useState(400)
+  const [pipes, setPipes] = useState([])
   const [score, setScore] = useState(0)
   // 0: 未开始, 1: 倒计时, 2: 进行中, 3: 结束
   const [gameStatus, setGameStatus] = useState(0)
   const [countdown, setCountdown] = useState(COUNTDOWN_TIME)
 
-  const pipeHeight = 300
+  const addPipe = () => {
+    const pipeHeight = Math.random() * (400 - PIPE_GAP) + 100
+    setPipes(pipes => [...pipes, {position: 400, height: pipeHeight}])
+  }
 
   const newGame = () => {
     setBirdPosition(300)
     setBirdVelocity(0)
-    setPipePosition(400)
+    setPipes([{position: 400, height: 300}])
     setScore(0)
     setGameStatus(1) // 开始倒计时
     setCountdown(COUNTDOWN_TIME)
@@ -97,45 +101,60 @@ const FlappyBird = () => {
 
       setBirdVelocity((prevVelocity) => prevVelocity + GRAVITY)
 
-      setPipePosition((prevPosition) => {
-        if (prevPosition < -PIPE_WIDTH) {
-          setScore((prevScore) => prevScore + 1)
-          return 400
+      setPipes(prevPipes => {
+        const newPipes = prevPipes
+            .map(pipe => ({...pipe, position: pipe.position - (score ? 2 * score : 2)}))
+            .filter(pipe => pipe.position > -PIPE_WIDTH)
+
+        if (newPipes.length > 0 && 400 - newPipes[newPipes.length - 1].position >= PIPE_SPACING) {
+          addPipe()
         }
-        return prevPosition - (score ? 2 * score : 2)
+
+        // 更新分数
+        if (newPipes.length > 0 && newPipes[0].position === 48) {
+          setScore(prevScore => prevScore + 1)
+        }
+
+        return newPipes
       })
 
       // 碰撞检测
-      if (
-          pipePosition < 90 &&
-          pipePosition > 10 &&
-          (birdPosition < pipeHeight || birdPosition > pipeHeight + PIPE_GAP)
-      ) {
-        setGameStatus(3)
-      }
+      pipes.forEach(pipe => {
+        if (
+            pipe.position < 90 &&
+            pipe.position > 10 &&
+            (birdPosition < pipe.height || birdPosition > pipe.height + PIPE_GAP)
+        ) {
+          setGameStatus(3)
+        }
+      })
     }, 20)
 
     return () => {
       clearInterval(gameLoop)
     }
-  }, [birdPosition, birdVelocity, pipePosition, gameStatus])
+  }, [birdPosition, birdVelocity, pipes, gameStatus, score])
 
   return (
       <>
         <div className={styles.gameContainer}>
           <Bird letter={letter} top={birdPosition}/>
-          <Pipe
-              width={PIPE_WIDTH}
-              top={0}
-              height={pipeHeight}
-              left={`${pipePosition}px`}
-          />
-          <Pipe
-              width={PIPE_WIDTH}
-              top={pipeHeight + PIPE_GAP}
-              height={600 - pipeHeight - PIPE_GAP}
-              left={`${pipePosition}px`}
-          />
+          {pipes.map((pipe, index) => (
+              <React.Fragment key={index}>
+                <Pipe
+                    width={PIPE_WIDTH}
+                    top={0}
+                    height={pipe.height}
+                    left={`${pipe.position}px`}
+                />
+                <Pipe
+                    width={PIPE_WIDTH}
+                    top={pipe.height + PIPE_GAP}
+                    height={600 - pipe.height - PIPE_GAP}
+                    left={`${pipe.position}px`}
+                />
+              </React.Fragment>
+          ))}
           <div className={styles.score}>{score}</div>
           {gameStatus === 1 && (
               <div style={{

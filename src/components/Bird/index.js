@@ -6,7 +6,9 @@ const Bird = ({letter, top}) => (
         className={styles.bird}
         style={{top: `${top}px`, left: '50px'}}
     >
-      {letter}
+      <p className={styles.letter}>
+        {letter}
+      </p>
     </div>
 )
 
