@@ -31,7 +31,7 @@ const GameStatus = {
 const FlappyBird = () => {
 
   const [letter, setLetter] = useState(getRandomLetter())
-  const [birdPosition, setBirdPosition] = useState(GAME_HEIGHT / 2)
+  const [birdPosition, setBirdPosition] = useState(GAME_HEIGHT / 2 - 80)
   const [birdVelocity, setBirdVelocity] = useState(0)
   const [pipes, setPipes] = useState([{position: INITIAL_PIPE_POSITION, height: 300}])
   const [score, setScore] = useState(0)
@@ -59,7 +59,7 @@ const FlappyBird = () => {
 
   // 开始新游戏
   const newGame = useCallback(() => {
-    setBirdPosition(GAME_HEIGHT / 2)
+    setBirdPosition(GAME_HEIGHT / 2 - 80)
     setBirdVelocity(0)
     setPipes([{position: INITIAL_PIPE_POSITION, height: 300}])  // 保持初始管道不变
     setScore(0)
@@ -177,9 +177,7 @@ const FlappyBird = () => {
   return (
       <div className={styles.gameContainer}>
         <div className={styles.gameElements}>
-          {(gameStatus === GameStatus.PLAYING || gameStatus === GameStatus.COUNTDOWN) && (
               <Bird letter={letter} top={birdPosition}/>
-          )}
           {pipes.map((pipe, index) => (
               <React.Fragment key={index}>
                 <Pipe
