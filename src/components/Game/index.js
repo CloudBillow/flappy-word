@@ -138,6 +138,7 @@ const FlappyBird = () => {
       setPipes(prevPipes => {
         const newPipes = prevPipes
             .map(pipe => ({...pipe, position: pipe.position - 2}))
+            // 去掉已经移出屏幕的
             .filter(pipe => pipe.position > -PIPE_WIDTH)
 
         // 添加新管道
@@ -181,12 +182,14 @@ const FlappyBird = () => {
                     top={0}
                     height={pipe.height}
                     left={`${pipe.position}px`}
+                    isTop={true}
                 />
                 <Pipe
                     width={PIPE_WIDTH}
                     top={pipe.height + PIPE_GAP}
                     height={GAME_HEIGHT - pipe.height - PIPE_GAP}
                     left={`${pipe.position}px`}
+                    isTop={false}
                 />
               </React.Fragment>
           ))}
