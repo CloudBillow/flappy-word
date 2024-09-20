@@ -53,7 +53,9 @@ const FlappyBird = () => {
 
   // 添加新的管道
   const addPipe = useCallback(() => {
-    const pipeHeight = Math.random() * (GAME_HEIGHT - PIPE_GAP - 200) + 100
+    // 错位
+    const dislocation = Math.random() * 160 + 20
+    const pipeHeight = Math.random() * (GAME_HEIGHT - PIPE_GAP - 200) + dislocation
     setPipes(pipes => [...pipes, {position: GAME_WIDTH, height: pipeHeight}])
   }, [])
 
@@ -71,6 +73,7 @@ const FlappyBird = () => {
   const jump = useCallback(() => {
     if (gameStatus === GameStatus.PLAYING) {
       setBirdVelocity(JUMP_STRENGTH)
+      setScore(prevScore => prevScore + 1)
       setLetter(getRandomLetter())
     }
   }, [gameStatus])
@@ -142,7 +145,7 @@ const FlappyBird = () => {
 
         // 更新分数
         if (newPipes.length > 0 && newPipes[0].position === 48) {
-          setScore(prevScore => prevScore + 1)
+          setScore(prevScore => prevScore + 3)
         }
 
         return newPipes

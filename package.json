@@ -1,5 +1,5 @@
 {
-  "name": "word-bird",
+  "name": "flappy-word",
   "version": "0.1.0",
   "private": true,
   "dependencies": {
