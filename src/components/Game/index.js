@@ -16,7 +16,9 @@ const PIPE_SPACING = 300
 const GAME_HEIGHT = 600
 const GAME_WIDTH = 400
 const INITIAL_PIPE_POSITION = 300
-const PIPE_SPEED = 1.5 // 管道移动速度
+const INITIAL_PIPE_SPEED = 1.5 // 管道移动速度
+const SPEED_INCREASE = 0.01 // 管道移动速度增加幅度
+const SCORE_TO_INCREASE_SPEED = 6 // 每多少分增加一次速度
 
 // 游戏状态
 const GameStatus = {
@@ -35,8 +37,14 @@ const FlappyBird = () => {
   const [score, setScore] = useState(0)
   const [passedCount, setPassedCount] = useState(0)
   const [gameStatus, setGameStatus] = useState(GameStatus.NOT_STARTED)
+  const [pipeSpeed, setPipeSpeed] = useState(INITIAL_PIPE_SPEED)
 
   const countdownRef = useRef()
+
+  // 计算当前管道速度
+  const calculatePipeSpeed = useCallback((currentScore) => {
+    return INITIAL_PIPE_SPEED + SPEED_INCREASE * Math.floor(currentScore / SCORE_TO_INCREASE_SPEED)
+  }, [])
 
   const handleResetCountdown = () => {
     if (countdownRef.current) {
@@ -140,8 +148,9 @@ const FlappyBird = () => {
 
       // 更新管道位置
       setPipes(prevPipes => {
+        const currentPipeSpeed = calculatePipeSpeed(score)
         const newPipes = prevPipes
-            .map(pipe => ({...pipe, position: pipe.position - PIPE_SPEED}))
+            .map(pipe => ({...pipe, position: pipe.position - currentPipeSpeed}))
             .filter(pipe => pipe.position > -PIPE_WIDTH)
 
         const birdRight = BIRD_LEFT + BIRD_SIZE;
@@ -164,7 +173,7 @@ const FlappyBird = () => {
         }
 
         // 更新分数
-        if (newPipes.length > 0 && newPipes[0].position <= BIRD_LEFT && newPipes[0].position > BIRD_LEFT - PIPE_SPEED) {
+        if (newPipes.length > 0 && newPipes[0].position <= BIRD_LEFT && newPipes[0].position > BIRD_LEFT - currentPipeSpeed) {
           setScore(prevScore => prevScore + 3)
           setPassedCount(prevCount => prevCount + 1)
         }
@@ -174,7 +183,7 @@ const FlappyBird = () => {
     }, 16)
 
     return () => clearInterval(gameLoop)
-  }, [birdPosition, birdVelocity, pipes, gameStatus, addPipe])
+  }, [birdPosition, birdVelocity, pipes, gameStatus, addPipe, score, calculatePipeSpeed])
 
   // 渲染游戏界面
   return (
