@@ -6,6 +6,8 @@ import GameOver from '../Status/GameOver'
 import ForStart from '../Status/ForStart'
 import Countdown from '../Status/Countdown'
 import Title from '../Title'
+import RankButton from '../Rank/RankButton'
+import RankList from '../Rank/RankList'
 
 // 游戏常量
 const GRAVITY = 0.3 // 重力
@@ -38,6 +40,13 @@ const FlappyBird = () => {
   const [passedCount, setPassedCount] = useState(0)
   const [gameStatus, setGameStatus] = useState(GameStatus.NOT_STARTED)
   const [countdown, setCountdown] = useState(3)
+  const [isModalOpen, setIsModalOpen] = useState(false)
+
+  const openModal = () => {
+    console.log('ssss')
+    setIsModalOpen(true)
+  }
+  const closeModal = () => setIsModalOpen(false)
 
   // 计算当前管道速度
   const calculatePipeSpeed = useCallback((currentScore) => {
@@ -177,7 +186,7 @@ const FlappyBird = () => {
   return (
       <div className={styles.gameContainer}>
         <div className={styles.gameElements}>
-              <Bird letter={letter} top={birdPosition}/>
+          <Bird letter={letter} top={birdPosition}/>
           {pipes.map((pipe, index) => (
               <React.Fragment key={index}>
                 <Pipe
@@ -222,7 +231,15 @@ const FlappyBird = () => {
                   message={'按下空格开始游戏...'}
               />
           )}
+          {(gameStatus === GameStatus.GAME_OVER || gameStatus === GameStatus.NOT_STARTED) && (
+              <RankButton/>
+          )}
         </div>
+
+        <RankList isOpen={isModalOpen} onClose={closeModal}>
+          <h2 style={{fontSize: '24px', marginBottom: '10px'}}>弹窗标题</h2>
+          <p>这是弹窗的内容。你可以在这里放置任何React组件。</p>
+        </RankList>
       </div>
   )
 }
