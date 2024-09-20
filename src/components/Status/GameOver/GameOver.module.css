@@ -7,8 +7,29 @@
   font-size: 24px;
   color: white;
   text-align: center;
+  width: 80%;
+}
+
+.title {
+  font-size: 34px;
+}
+
+.scoreTable {
+  margin: 20px auto;
+  border-collapse: collapse;
+}
+
+.scoreTable td {
+  padding: 5px 10px;
+  text-align: left;
+}
+
+.scoreTable td:first-child {
+  text-align: right;
 }
 
 .replay {
   font-size: 20px;
+  display: block;
+  margin-top: 20px;
 }

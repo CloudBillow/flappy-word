@@ -32,6 +32,7 @@ const FlappyBird = () => {
   const [birdVelocity, setBirdVelocity] = useState(0)
   const [pipes, setPipes] = useState([{position: INITIAL_PIPE_POSITION, height: 300}])
   const [score, setScore] = useState(0)
+  const [passedCount, setPassedCount] = useState(0)
   const [gameStatus, setGameStatus] = useState(GameStatus.NOT_STARTED)
 
   const countdownRef = useRef()
@@ -65,6 +66,7 @@ const FlappyBird = () => {
     setBirdVelocity(0)
     setPipes([{position: INITIAL_PIPE_POSITION, height: 300}])  // 保持初始管道不变
     setScore(0)
+    setPassedCount(0)
     setGameStatus(GameStatus.COUNTDOWN)
     handleResetCountdown()
   }, [])
@@ -146,6 +148,7 @@ const FlappyBird = () => {
         // 更新分数
         if (newPipes.length > 0 && newPipes[0].position === 48) {
           setScore(prevScore => prevScore + 3)
+          setPassedCount(prevCount => prevCount + 1)
         }
 
         return newPipes
@@ -189,7 +192,12 @@ const FlappyBird = () => {
           ))}
         </div>
         <div className={styles.uiElements}>
-          <div className={styles.score}>得分: {score}</div>
+          {gameStatus === GameStatus.PLAYING && (
+              <div className={styles.score}>
+                <span>得分: {score}</span>
+                <span>通过: {passedCount}</span>
+              </div>
+          )}
           {gameStatus === GameStatus.NOT_STARTED && (
               <Title/>
           )}
@@ -197,7 +205,10 @@ const FlappyBird = () => {
               <Countdown ref={countdownRef}/>
           )}
           {gameStatus === GameStatus.GAME_OVER && (
-              <GameOver score={score}/>
+              <GameOver
+                  score={score}
+                  passedCount={passedCount}
+              />
           )}
           {gameStatus === GameStatus.NOT_STARTED && (
               <NotStart/>

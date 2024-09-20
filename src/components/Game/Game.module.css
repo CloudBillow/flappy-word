@@ -35,6 +35,8 @@
   font-size: 18px;
   color: white;
   pointer-events: none;
+  display: flex;
+  gap: 20px;
 }
 
 .title, .countdown, .gameOver, .notStart {
