@@ -5,12 +5,13 @@
   left: 50%;
   transform: translate(-50%, -50%);
   font-size: 24px;
-  color: white;
+  color: #f6f6f6;
   text-align: center;
   width: 80%;
 }
 
 .title {
+  color: white;
   font-size: 34px;
 }
 
