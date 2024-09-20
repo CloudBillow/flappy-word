@@ -177,7 +177,9 @@ const FlappyBird = () => {
   return (
       <div className={styles.gameContainer}>
         <div className={styles.gameElements}>
-          <Bird letter={letter} top={birdPosition}/>
+          {(gameStatus === GameStatus.PLAYING || gameStatus === GameStatus.COUNTDOWN) && (
+              <Bird letter={letter} top={birdPosition}/>
+          )}
           {pipes.map((pipe, index) => (
               <React.Fragment key={index}>
                 <Pipe
