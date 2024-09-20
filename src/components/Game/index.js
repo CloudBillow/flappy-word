@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useRef, useState } from 'react'
+import React, { useCallback, useEffect, useState } from 'react'
 import styles from './Game.module.css'
 import Bird from '../Bird'
 import Pipe from '../Pipe'
@@ -37,24 +37,12 @@ const FlappyBird = () => {
   const [score, setScore] = useState(0)
   const [passedCount, setPassedCount] = useState(0)
   const [gameStatus, setGameStatus] = useState(GameStatus.NOT_STARTED)
-  const [pipeSpeed, setPipeSpeed] = useState(INITIAL_PIPE_SPEED)
-
-  const countdownRef = useRef()
+  const [countdown, setCountdown] = useState(3)
 
   // 计算当前管道速度
   const calculatePipeSpeed = useCallback((currentScore) => {
     return INITIAL_PIPE_SPEED + SPEED_INCREASE * Math.floor(currentScore / SCORE_TO_INCREASE_SPEED)
   }, [])
-
-  const handleResetCountdown = () => {
-    if (countdownRef.current) {
-      countdownRef.current.resetCountdown() // 重置倒计时
-    }
-  }
-
-  const handleSetCountdown = (value) => {
-    countdownRef.current.setCountdown(value) // 设置倒计时为10
-  }
 
   // 生成随机字母
   function getRandomLetter() {
@@ -76,8 +64,9 @@ const FlappyBird = () => {
     setPipes([{position: INITIAL_PIPE_POSITION, height: 300}])  // 保持初始管道不变
     setScore(0)
     setPassedCount(0)
+    setCountdown(3)
     setGameStatus(GameStatus.COUNTDOWN)
-    handleResetCountdown()
+    setCountdown(3)
   }, [])
 
   // 鸟跳跃
@@ -110,11 +99,10 @@ const FlappyBird = () => {
   useEffect(() => {
     if (gameStatus === GameStatus.COUNTDOWN) {
       const countdownInterval = setInterval(() => {
-        handleSetCountdown((prev) => {
+        setCountdown((prev) => {
           if (prev <= 1) {
             clearInterval(countdownInterval)
             setGameStatus(GameStatus.PLAYING)
-            // 当倒计时结束时，不改变管道位置，让它从原位置开始移动
             return 0
           }
           return prev - 1
@@ -140,8 +128,8 @@ const FlappyBird = () => {
         return newPosition
       })
 
-      const BIRD_SIZE = 50; // 鸟的新尺寸
-      const BIRD_LEFT = 50; // 鸟的固定左侧位置
+      const BIRD_SIZE = 50 // 鸟的新尺寸
+      const BIRD_LEFT = 50 // 鸟的固定左侧位置
 
       // 更新鸟的速度
       setBirdVelocity((prevVelocity) => prevVelocity + GRAVITY)
@@ -153,17 +141,17 @@ const FlappyBird = () => {
             .map(pipe => ({...pipe, position: pipe.position - currentPipeSpeed}))
             .filter(pipe => pipe.position > -PIPE_WIDTH)
 
-        const birdRight = BIRD_LEFT + BIRD_SIZE;
-        const birdBottom = birdPosition + BIRD_SIZE;
+        const birdRight = BIRD_LEFT + BIRD_SIZE
+        const birdBottom = birdPosition + BIRD_SIZE
 
-        for (let pipe of newPipes) {
+        for(let pipe of newPipes) {
           if (
               birdRight > pipe.position &&
               BIRD_LEFT < pipe.position + PIPE_WIDTH &&
               (birdPosition < pipe.height || birdBottom > pipe.height + PIPE_GAP)
           ) {
-            setGameStatus(GameStatus.GAME_OVER);
-            return newPipes; // 立即返回以停止游戏循环
+            setGameStatus(GameStatus.GAME_OVER)
+            return newPipes // 立即返回以停止游戏循环
           }
         }
 
@@ -220,7 +208,7 @@ const FlappyBird = () => {
               <Title/>
           )}
           {gameStatus === GameStatus.COUNTDOWN && (
-              <Countdown ref={countdownRef}/>
+              <Countdown count={countdown}/>
           )}
           {gameStatus === GameStatus.GAME_OVER && (
               <GameOver
