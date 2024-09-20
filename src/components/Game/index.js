@@ -3,7 +3,7 @@ import styles from './Game.module.css'
 import Bird from '../Bird'
 import Pipe from '../Pipe'
 import GameOver from '../Status/GameOver'
-import NotStart from '../Status/NotStart'
+import ForStart from '../Status/ForStart'
 import Countdown from '../Status/Countdown'
 import Title from '../Title'
 
@@ -217,7 +217,10 @@ const FlappyBird = () => {
               />
           )}
           {gameStatus === GameStatus.NOT_STARTED && (
-              <NotStart/>
+              <ForStart
+                  className={styles.startGame}
+                  message={'按下空格开始游戏...'}
+              />
           )}
         </div>
       </div>

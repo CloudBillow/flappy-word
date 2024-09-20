@@ -42,3 +42,11 @@
 .title, .countdown, .gameOver, .notStart {
   pointer-events: auto;
 }
+
+.startGame {
+  user-select: none;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}

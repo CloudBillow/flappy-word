@@ -29,8 +29,7 @@
   text-align: right;
 }
 
-.replay {
-  font-size: 20px;
-  display: block;
-  margin-top: 20px;
+.reStart {
+  user-select: none;
+  left: 50%;
 }

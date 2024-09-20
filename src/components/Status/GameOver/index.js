@@ -1,5 +1,6 @@
 import React from 'react'
 import styles from './GameOver.module.css'
+import ForStart from '../ForStart'
 
 const GameOver = ({score, passedCount}) => (
     <div className={styles.gameOver}>
@@ -18,9 +19,10 @@ const GameOver = ({score, passedCount}) => (
         </tr>
         </tbody>
       </table>
-      <span className={styles.replay}>
-        按下空格重新开始
-      </span>
+      <ForStart
+          className={styles.reStart}
+          message={'按下空格重新开始'}
+      />
     </div>
 )
 
