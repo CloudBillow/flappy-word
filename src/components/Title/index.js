@@ -3,7 +3,7 @@ import styles from './Title.module.css'
 
 const Title = () => (
     <div className={styles.title}>
-      Word Bird
+      Flappy Word
     </div>
 )
 
