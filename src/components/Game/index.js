@@ -8,14 +8,15 @@ import Countdown from '../Status/Countdown'
 import Title from '../Title'
 
 // 游戏常量
-const GRAVITY = 0.5
-const JUMP_STRENGTH = -10
-const PIPE_WIDTH = 50
+const GRAVITY = 0.3 // 重力
+const JUMP_STRENGTH = -7 // 跳跃力度
+const PIPE_WIDTH = 50 // 管道宽度
 const PIPE_GAP = 200
 const PIPE_SPACING = 300
 const GAME_HEIGHT = 600
 const GAME_WIDTH = 400
 const INITIAL_PIPE_POSITION = 300
+const PIPE_SPEED = 1.5 // 管道移动速度
 
 // 游戏状态
 const GameStatus = {
@@ -131,15 +132,31 @@ const FlappyBird = () => {
         return newPosition
       })
 
+      const BIRD_SIZE = 50; // 鸟的新尺寸
+      const BIRD_LEFT = 50; // 鸟的固定左侧位置
+
       // 更新鸟的速度
       setBirdVelocity((prevVelocity) => prevVelocity + GRAVITY)
 
       // 更新管道位置
       setPipes(prevPipes => {
         const newPipes = prevPipes
-            .map(pipe => ({...pipe, position: pipe.position - 2}))
-            // 去掉已经移出屏幕的
+            .map(pipe => ({...pipe, position: pipe.position - PIPE_SPEED}))
             .filter(pipe => pipe.position > -PIPE_WIDTH)
+
+        const birdRight = BIRD_LEFT + BIRD_SIZE;
+        const birdBottom = birdPosition + BIRD_SIZE;
+
+        for (let pipe of newPipes) {
+          if (
+              birdRight > pipe.position &&
+              BIRD_LEFT < pipe.position + PIPE_WIDTH &&
+              (birdPosition < pipe.height || birdBottom > pipe.height + PIPE_GAP)
+          ) {
+            setGameStatus(GameStatus.GAME_OVER);
+            return newPipes; // 立即返回以停止游戏循环
+          }
+        }
 
         // 添加新管道
         if (newPipes.length > 0 && GAME_WIDTH - newPipes[newPipes.length - 1].position >= PIPE_SPACING) {
@@ -147,25 +164,14 @@ const FlappyBird = () => {
         }
 
         // 更新分数
-        if (newPipes.length > 0 && newPipes[0].position === 48) {
+        if (newPipes.length > 0 && newPipes[0].position <= BIRD_LEFT && newPipes[0].position > BIRD_LEFT - PIPE_SPEED) {
           setScore(prevScore => prevScore + 3)
           setPassedCount(prevCount => prevCount + 1)
         }
 
         return newPipes
       })
-
-      // 碰撞检测
-      pipes.forEach(pipe => {
-        if (
-            pipe.position < 90 &&
-            pipe.position > 10 &&
-            (birdPosition < pipe.height || birdPosition > pipe.height + PIPE_GAP)
-        ) {
-          setGameStatus(GameStatus.GAME_OVER)
-        }
-      })
-    }, 20)
+    }, 16)
 
     return () => clearInterval(gameLoop)
   }, [birdPosition, birdVelocity, pipes, gameStatus, addPipe])
