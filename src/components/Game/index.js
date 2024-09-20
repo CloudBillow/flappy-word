@@ -1,7 +1,11 @@
-import React, { useCallback, useEffect, useState } from 'react'
+import React, { useCallback, useEffect, useRef, useState } from 'react'
 import styles from './Game.module.css'
 import Bird from '../Bird'
 import Pipe from '../Pipe'
+import GameOver from '../Status/GameOver'
+import NotStart from '../Status/NotStart'
+import Countdown from '../Status/Countdown'
+import Title from '../Title'
 
 // 游戏常量
 const GRAVITY = 0.5
@@ -9,12 +13,11 @@ const JUMP_STRENGTH = -10
 const PIPE_WIDTH = 50
 const PIPE_GAP = 200
 const PIPE_SPACING = 300
-const COUNTDOWN_TIME = 3
 const GAME_HEIGHT = 600
 const GAME_WIDTH = 400
 const INITIAL_PIPE_POSITION = 300
 
-// 游戏状态枚举
+// 游戏状态
 const GameStatus = {
   NOT_STARTED: 0,
   COUNTDOWN: 1,
@@ -23,14 +26,25 @@ const GameStatus = {
 }
 
 const FlappyBird = () => {
-  // 状态变量
+
   const [letter, setLetter] = useState(getRandomLetter())
   const [birdPosition, setBirdPosition] = useState(GAME_HEIGHT / 2)
   const [birdVelocity, setBirdVelocity] = useState(0)
   const [pipes, setPipes] = useState([{position: INITIAL_PIPE_POSITION, height: 300}])
   const [score, setScore] = useState(0)
   const [gameStatus, setGameStatus] = useState(GameStatus.NOT_STARTED)
-  const [countdown, setCountdown] = useState(COUNTDOWN_TIME)
+
+  const countdownRef = useRef()
+
+  const handleResetCountdown = () => {
+    if (countdownRef.current) {
+      countdownRef.current.resetCountdown() // 重置倒计时
+    }
+  }
+
+  const handleSetCountdown = (value) => {
+    countdownRef.current.setCountdown(value) // 设置倒计时为10
+  }
 
   // 生成随机字母
   function getRandomLetter() {
@@ -50,7 +64,7 @@ const FlappyBird = () => {
     setPipes([{position: INITIAL_PIPE_POSITION, height: 300}])  // 保持初始管道不变
     setScore(0)
     setGameStatus(GameStatus.COUNTDOWN)
-    setCountdown(COUNTDOWN_TIME)
+    handleResetCountdown()
   }, [])
 
   // 鸟跳跃
@@ -64,7 +78,7 @@ const FlappyBird = () => {
   // 键盘事件监听
   useEffect(() => {
     const handleKeyDown = (e) => {
-      if (e.key === ' ' || e.key === 'Spacebar') {
+      if (e.key === ' ' || e.key === 'Space') {
         e.preventDefault()
         if (gameStatus === GameStatus.NOT_STARTED || gameStatus === GameStatus.GAME_OVER) {
           newGame()
@@ -82,7 +96,7 @@ const FlappyBird = () => {
   useEffect(() => {
     if (gameStatus === GameStatus.COUNTDOWN) {
       const countdownInterval = setInterval(() => {
-        setCountdown((prev) => {
+        handleSetCountdown((prev) => {
           if (prev <= 1) {
             clearInterval(countdownInterval)
             setGameStatus(GameStatus.PLAYING)
@@ -91,7 +105,7 @@ const FlappyBird = () => {
           }
           return prev - 1
         })
-      }, 1000)
+      }, 800)
 
       return () => clearInterval(countdownInterval)
     }
@@ -152,65 +166,40 @@ const FlappyBird = () => {
   // 渲染游戏界面
   return (
       <div className={styles.gameContainer}>
-        <Bird letter={letter} top={birdPosition}/>
-        {pipes.map((pipe, index) => (
-            <React.Fragment key={index}>
-              <Pipe
-                  width={PIPE_WIDTH}
-                  top={0}
-                  height={pipe.height}
-                  left={`${pipe.position}px`}
-              />
-              <Pipe
-                  width={PIPE_WIDTH}
-                  top={pipe.height + PIPE_GAP}
-                  height={GAME_HEIGHT - pipe.height - PIPE_GAP}
-                  left={`${pipe.position}px`}
-              />
-            </React.Fragment>
-        ))}
-        <div className={styles.score}>{score}</div>
-        {gameStatus === GameStatus.COUNTDOWN && (
-            <div style={{
-              position: 'absolute',
-              top: '50%',
-              left: '50%',
-              transform: 'translate(-50%, -50%)',
-              fontSize: '48px',
-              color: 'white',
-              textAlign: 'center'
-            }}>
-              {countdown}
-            </div>
-        )}
-        {gameStatus === GameStatus.GAME_OVER && (
-            <div style={{
-              position: 'absolute',
-              top: '50%',
-              left: '50%',
-              transform: 'translate(-50%, -50%)',
-              fontSize: '24px',
-              color: 'white',
-              textAlign: 'center'
-            }}>
-              游戏结束<br/>
-              分数: {score}<br/>
-              重新开始
-            </div>
-        )}
-        {gameStatus === GameStatus.NOT_STARTED && (
-            <div style={{
-              position: 'absolute',
-              top: '50%',
-              left: '50%',
-              transform: 'translate(-50%, -50%)',
-              fontSize: '24px',
-              color: 'white',
-              textAlign: 'center'
-            }}>
-              按下空格开始游戏
-            </div>
-        )}
+        <div className={styles.gameElements}>
+          <Bird letter={letter} top={birdPosition}/>
+          {pipes.map((pipe, index) => (
+              <React.Fragment key={index}>
+                <Pipe
+                    width={PIPE_WIDTH}
+                    top={0}
+                    height={pipe.height}
+                    left={`${pipe.position}px`}
+                />
+                <Pipe
+                    width={PIPE_WIDTH}
+                    top={pipe.height + PIPE_GAP}
+                    height={GAME_HEIGHT - pipe.height - PIPE_GAP}
+                    left={`${pipe.position}px`}
+                />
+              </React.Fragment>
+          ))}
+        </div>
+        <div className={styles.uiElements}>
+          <div className={styles.score}>得分: {score}</div>
+          {gameStatus === GameStatus.NOT_STARTED && (
+              <Title/>
+          )}
+          {gameStatus === GameStatus.COUNTDOWN && (
+              <Countdown ref={countdownRef}/>
+          )}
+          {gameStatus === GameStatus.GAME_OVER && (
+              <GameOver score={score}/>
+          )}
+          {gameStatus === GameStatus.NOT_STARTED && (
+              <NotStart/>
+          )}
+        </div>
       </div>
   )
 }
