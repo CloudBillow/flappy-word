@@ -1,11 +1,14 @@
 import React from 'react'
 import styles from './RankButton.module.css'
-import rankImage from '../../../static/rank.png';
 
 
-const RankButton = () => {
+const RankButton = ({onClick}) => {
   return (
-      <img src={rankImage} className={styles.rankButton} alt="Rank button"/>
+      <img src={`${process.env.PUBLIC_URL}/img/rank.png`}
+           className={styles.rankButton}
+           alt="Rank button"
+           onClick={onClick}
+      />
   )
 }
 

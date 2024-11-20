@@ -14,7 +14,7 @@ const GameOver = ({score, passedCount}) => (
         </tbody>
         <tbody>
         <tr>
-          <td>通过:</td>
+          <td>穿过:</td>
           <td>{passedCount}</td>
         </tr>
         </tbody>

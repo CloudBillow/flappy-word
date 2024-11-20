@@ -4,19 +4,39 @@
   left: 0;
   right: 0;
   bottom: 0;
-  background-color: rgba(0, 0, 0, 0.5);
+  background-color: rgba(0, 0, 0, 0.5); /* 半透明背景 */
   display: flex;
-  align-items: center;
-  justify-content: center;
+  flex-direction: column; /* 垂直排列 */
+  align-items: center; /* 水平居中 */
+  justify-content: center; /* 垂直居中（可选，如果上下两弹框间距小，也可改为 space-around） */
+  z-index: 1000;
 }
 
 .modal {
-  background-color: white;
+  background-color: #e0f7fa;
   padding: 20px;
-  border-radius: 5px;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
-  max-width: 500px;
-  width: 100%;
+  border-radius: 10px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+  max-width: 310px;
+  width: 90%;
+  height: 39vh; /* 确保弹框内部有足够空间 */
+  overflow: hidden;
+  border: 2px solid #4caf50;
+  margin-bottom: 8px; /* 弹框之间的间距 */
+}
+
+.myScore {
+  background-color: #e0f7fa;
+  padding: 16px;
+  border-radius: 10px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+  max-width: 320px;
+  width: 90%;
+  overflow: hidden;
+  border: 2px solid #4caf50;
+  height: auto; /* 允许高度根据内容调整 */
+  min-height: 4px; /* 提供一个合理的最小高度 */
+
 }
 
 .closeButton {
@@ -25,8 +45,76 @@
   background: none;
   font-size: 18px;
   cursor: pointer;
+  color: #4caf50; /* 绿色关闭按钮 */
 }
 
 .content {
-  margin-top: 20px;
+  margin-top: 10px;
 }
+
+.title {
+  display: flex; /* 使用 flex 布局确保内容居中 */
+  justify-content: center; /* 水平居中 */
+  align-items: center; /* 垂直居中 */
+  font-size: 18px; /* 标题字体大小 */
+  font-weight: bold; /* 加粗字体 */
+  color: #004d40; /* 深绿色标题 */
+  margin: 0 auto 10px; /* 上下居中 */
+  letter-spacing: 5px; /* 增加字母间距 */
+  padding-bottom: 5px; /* 底部内边距 */
+  border-bottom: 1px solid #80cbc4; /* 底部分割线 */
+  width: 100%; /* 确保占满父容器 */
+  text-align: center; /* 备用居中方式 */
+}
+
+.table {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  max-height: 33vh;
+  overflow: hidden;
+}
+
+.header {
+  display: flex;
+  font-weight: bold;
+  background-color: #b2dfdb; /* 浅绿色背景 */
+  padding: 2px 0;
+  border-bottom: 1px solid #004d40; /* 深绿色下边框 */
+  color: #004d40; /* 深绿色字体 */
+}
+
+.body {
+  overflow-y: auto; /* 启用垂直滚动 */
+  max-height: 40vh; /* 限制内容区域的最大高度 */
+  scrollbar-width: thin; /* Firefox: 显示细滚动条 */
+  -webkit-overflow-scrolling: touch; /* iOS: 启用平滑滚动 */
+}
+
+.row {
+  display: flex;
+  width: 100%;
+  padding: 2px 0; /* 减少行的上下内边距 */
+  border-bottom: 1px solid #80cbc4; /* 柔和的绿色分隔线 */
+  color: #004d40; /* 深绿色字体 */
+  align-items: center; /* 水平对齐，避免内容分散 */
+}
+
+.row:nth-child(odd) {
+  background-color: #e0f2f1; /* 偶数行背景色 */
+}
+
+.row:nth-child(even) {
+  background-color: #ffffff; /* 奇数行背景色 */
+}
+
+.cell {
+  flex: 1; /* 每列宽度均分 */
+  text-align: center;
+  padding: 0 4px; /* 减少单元格的左右内边距 */
+  font-weight: 500;
+  font-size: 12px; /* 缩小字体大小 */
+  line-height: 1; /* 使行高等于字体大小 */
+}
+
+

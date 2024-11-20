@@ -1,0 +1,25 @@
+.row {
+  display: flex;
+  width: 100%;
+  padding: 2px 0; /* 减少行的上下内边距 */
+  border-bottom: 1px solid #80cbc4; /* 柔和的绿色分隔线 */
+  color: #004d40; /* 深绿色字体 */
+  align-items: center; /* 水平对齐，避免内容分散 */
+}
+
+.row:nth-child(odd) {
+  background-color: #e0f2f1; /* 偶数行背景色 */
+}
+
+.row:nth-child(even) {
+  background-color: #ffffff; /* 奇数行背景色 */
+}
+
+.cell {
+  flex: 1; /* 每列宽度均分 */
+  text-align: center;
+  padding: 0 4px; /* 减少单元格的左右内边距 */
+  font-weight: 500;
+  font-size: 14px; /* 缩小字体大小 */
+  line-height: 1; /* 使行高等于字体大小 */
+}
