@@ -1,14 +1,47 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import styles from './MyRank.module.css'
+import { apiPaths, get } from '../../../api/api'
+import UserStorage from '../../../utils/storage'
 
+const MyRank = () => {
 
-const MyRank = ({item}) => {
+  const [myRank, setMyRank] = useState({})
+
+  useEffect(() => {
+    get(apiPaths.MY_RANK)
+        .then((data) => {
+          if (data == null) {
+            data = {}
+          }
+          setMyRank(data)
+        })
+        .catch(() => {
+          setMyRank({})
+        })
+  }, [])
+
+  const renderRank = () => {
+    const rank = myRank.number
+    if (rank > 0 && rank <= 3) {
+      return (
+          <img
+              src={`/img/rank_${rank}.png`}
+              alt={`第${rank}名`}
+              className={styles.rankIcon}
+          />
+      )
+    }
+    return <p className={styles.cell}>{rank === 0 ? '-' : rank}</p>
+  }
+
   return (
       <div className={styles.row}>
-        <p className={styles.cell}>{item.rank}</p>
-        <p className={styles.nameCell}>{item.name}</p>
-        <p className={styles.cell}>{item.score}</p>
-        <p className={styles.cell}>{item.hurdle}</p>
+        <div className={styles.cell}>
+          {renderRank()}
+        </div>
+        <p className={styles.nameCell}>{UserStorage.getUserInfo().name}</p>
+        <p className={styles.cell}>{myRank.score || 0}</p>
+        <p className={styles.cell}>{myRank.hurdle || 0}</p>
       </div>
   )
 }

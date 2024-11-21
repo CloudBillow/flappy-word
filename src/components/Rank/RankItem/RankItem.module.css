@@ -1,4 +1,5 @@
 .row {
+  user-select: none;
   display: flex;
   width: 100%;
   padding: 2px 0; /* 减少行的上下内边距 */
@@ -8,28 +9,40 @@
 }
 
 .row:nth-child(odd) {
-  background-color: #e0f2f1; /* 偶数行背景色 */
+  user-select: none;
+  background-color: #e0f2f1;
 }
 
 .row:nth-child(even) {
-  background-color: #ffffff; /* 奇数行背景色 */
+  user-select: none;
+  background-color: #ffffff;
 }
 
 .cell {
-  flex: 1; /* 每列宽度均分 */
+  user-select: none;
+  flex: 1;
   text-align: center;
-  padding: 0 4px; /* 减少单元格的左右内边距 */
+  padding: 0 4px;
   font-weight: 500;
-  font-size: 14px; /* 缩小字体大小 */
-  line-height: 1; /* 使行高等于字体大小 */
+  font-size: 14px;
+  line-height: 1;
 }
 
 .nameCell {
+  user-select: none;
   width: 140px;
   text-align: center;
-  padding: 0 4px; /* 减少单元格的左右内边距 */
+  padding: 0 4px;
   font-weight: 500;
-  font-size: 12px; /* 缩小字体大小 */
-  line-height: 1; /* 使行高等于字体大小 */
+  font-size: 12px;
+  line-height: 1;
 }
 
+.rankIcon {
+  user-select: none;
+  width: 23px;
+  height: 23px;
+  display: block;
+  margin: 0 auto;
+  object-fit: contain;
+}

@@ -14,9 +14,6 @@ const RankList = ({isOpen, onClose}) => {
           .then((data) => {
             setDataList(data.records)
           })
-          .catch((error) => {
-            console.error('请求失败:', error)
-          })
     }
   }, [isOpen])
 
@@ -46,12 +43,7 @@ const RankList = ({isOpen, onClose}) => {
           </div>
         </div>
         <div className={styles.myScore}>
-          <MyRank item={{
-            rank: 101279,
-            name: 'daxue',
-            score: 100,
-            hurdle: 2
-          }}/>
+          <MyRank/>
         </div>
       </div>
   )

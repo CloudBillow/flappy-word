@@ -1,29 +1,43 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import styles from './GameOver.module.css'
 import ForStart from '../ForStart'
 import { post, apiPaths } from '../../../api/api'
-import { useEffect } from 'react'
 import UserStorage from '../../../utils/storage'
 
-const GameOver = ({score, passedCount}) => {
-
-  // 上传分数
-  const uploadScore = async() => {
-    const userInfo = UserStorage.getUserInfo()
-    try {
-      await post(apiPaths.UPLOAD_SCORE, {
-        userId: userInfo.userId,
-        score: score,
-        hurdle: passedCount
-      })
-    } catch(error) {
-      console.error('上传分数失败:', error)
-    }
-  }
+const GameOver = ({ score, passedCount, userAction }) => {
 
   useEffect(() => {
+    let isSubscribed = true
+
+    const uploadScore = async () => {
+      const userInfo = UserStorage.getUserInfo()
+      if (!userInfo?.userId) {
+        console.warn('未找到用户信息')
+        return
+      }
+
+      try {
+        console.log(userAction)
+        if (isSubscribed) {
+          await post(apiPaths.UPLOAD_SCORE, {
+            userId: userInfo.userId,
+            score: score,
+            hurdle: passedCount
+          })
+        }
+      } catch (error) {
+        if (isSubscribed) {
+          console.error('上传分数失败:', error)
+        }
+      }
+    }
+
     uploadScore()
-  }, [])
+
+    return () => {
+      isSubscribed = false
+    }
+  }, []) // 空依赖数组，只在组件挂载时执行一次
 
   return (
       <div className={styles.gameOver}>
@@ -34,8 +48,6 @@ const GameOver = ({score, passedCount}) => {
             <td>得分:</td>
             <td>{score}</td>
           </tr>
-          </tbody>
-          <tbody>
           <tr>
             <td>穿过:</td>
             <td>{passedCount}</td>
@@ -50,4 +62,4 @@ const GameOver = ({score, passedCount}) => {
   )
 }
 
-export default GameOver
+export default React.memo(GameOver)

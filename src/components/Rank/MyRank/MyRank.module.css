@@ -1,26 +1,38 @@
 .row {
+  user-select: none;
   display: flex;
   height: 4px;
   width: 100%;
-  color: #004d40; /* 深绿色字体 */
-  align-items: center; /* 水平对齐，避免内容分散 */
+  color: #004d40;
+  align-items: center;
 }
 
 .cell {
-  flex: 1; /* 每列宽度均分 */
+  user-select: none;
+  flex: 1;
   text-align: center;
-  padding: 0 1px; /* 减少单元格的左右内边距 */
+  padding: 0 1px;
   font-weight: 500;
-  font-size: 14px; /* 缩小字体大小 */
-  line-height: 1; /* 使行高等于字体大小 */
+  font-size: 14px;
+  line-height: 1;
 }
 
 .nameCell {
+  user-select: none;
   width: 138px;
   text-align: center;
-  padding: 0 4px; /* 减少单元格的左右内边距 */
+  padding: 0 4px;
   font-weight: 500;
-  font-size: 12px; /* 缩小字体大小 */
-  line-height: 1; /* 使行高等于字体大小 */
+  font-size: 12px;
+  line-height: 1;
+}
+
+.rankIcon {
+  user-select: none;
+  width: 23px;
+  height: 23px;
+  display: block;
+  margin: 0 auto;
+  object-fit: contain;
 }
 

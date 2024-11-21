@@ -1,4 +1,6 @@
-import React, { createContext, useContext, useEffect, useState } from 'react'
+import React, { createContext, useContext, useState } from 'react'
+import { apiPaths, post } from '../api/api'
+import UserStorage from '../utils/storage'
 
 const GameContext = createContext(null)
 
@@ -19,10 +21,33 @@ export const GameProvider = ({children}) => {
     setGameStatus(newStatus)
   }
 
+  const doLogin = async(name, code) => {
+    try {
+      const data = await post(apiPaths.LOGIN, {
+        username: name,
+        code: code
+      })
+      // 登录成功后保存用户信息
+      UserStorage.saveUserInfo({
+        name: name,
+        code: code,
+        userId: data.userId,
+        token: data.token
+      })
+      changeGameStatus(GameStatus.NOT_STARTED)
+      return true
+    } catch(e) {
+      console.log('登录失败', e)
+      return false
+    }
+
+  }
+
   const value = {
     GameStatus,
     currentGameStatus,
-    changeGameStatus
+    changeGameStatus,
+    doLogin
   }
 
   return (
