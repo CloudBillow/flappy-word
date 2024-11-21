@@ -22,6 +22,7 @@ const MyRank = () => {
 
   const renderRank = () => {
     const rank = myRank.number
+    if (!rank) return '-'
     if (rank > 0 && rank <= 3) {
       return (
           <img
@@ -40,8 +41,8 @@ const MyRank = () => {
           {renderRank()}
         </div>
         <p className={styles.nameCell}>{UserStorage.getUserInfo().name}</p>
-        <p className={styles.cell}>{myRank.score || 0}</p>
-        <p className={styles.cell}>{myRank.hurdle || 0}</p>
+        <p className={styles.cell}>{myRank.score || '-'}</p>
+        <p className={styles.cell}>{myRank.hurdle || '-'}</p>
       </div>
   )
 }
