@@ -33,7 +33,9 @@ apiClient.interceptors.response.use(
 )
 
 const API_PATHS = {
-  RANK_LIST: '/flappyword/ranking'
+  RANK_LIST: '/flappyword/ranking',
+  LOGIN: '/flappyword/login',
+  UPLOAD_SCORE: '/flappyword/ranking'
 }
 
 export const post = (url, data) => apiClient.post(url, data)

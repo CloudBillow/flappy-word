@@ -14,3 +14,13 @@
   font-size: 14px; /* 缩小字体大小 */
   line-height: 1; /* 使行高等于字体大小 */
 }
+
+.nameCell {
+  width: 138px;
+  text-align: center;
+  padding: 0 4px; /* 减少单元格的左右内边距 */
+  font-weight: 500;
+  font-size: 12px; /* 缩小字体大小 */
+  line-height: 1; /* 使行高等于字体大小 */
+}
+
