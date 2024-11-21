@@ -26,7 +26,7 @@ apiClient.interceptors.request.use(
 apiClient.interceptors.response.use(
     async(response) => {
       // 处理 token 过期
-      if (response.data.code === 40001) {
+      if (response.data.code === 401) {
         try {
           const userInfo = UserStorage.getUserInfo()
           if (!userInfo?.name || !userInfo?.code) {
@@ -52,6 +52,7 @@ apiClient.interceptors.response.use(
           const config = response.config
           config.headers['Authorization'] = 'Bearer ' + loginData.token
           // 重试请求
+          console.log('重新登录中...')
           return apiClient(config)
 
         } catch(error) {
