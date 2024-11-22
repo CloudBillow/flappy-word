@@ -1,6 +1,6 @@
 import React, { createContext, useContext, useState } from 'react'
 import { apiPaths, post } from '../api/api'
-import UserStorage from '../utils/storage'
+import { getUserInfo, saveUserInfo } from '../utils/storage'
 
 const GameContext = createContext(null)
 
@@ -28,7 +28,7 @@ export const GameProvider = ({children}) => {
         code: code
       })
       // 登录成功后保存用户信息
-      UserStorage.saveUserInfo({
+      saveUserInfo({
         name: name,
         code: code,
         userId: data.userId,
@@ -44,11 +44,20 @@ export const GameProvider = ({children}) => {
 
   }
 
+  const isLogin = () => {
+    const userInfo = getUserInfo()
+    if (userInfo == null) {
+      setGameStatus(GameStatus.NOT_LOGIN)
+    }
+    return currentGameStatus !== GameStatus.NOT_LOGIN
+  }
+
   const value = {
     GameStatus,
     currentGameStatus,
     changeGameStatus,
-    doLogin
+    doLogin,
+    isLogin
   }
 
   return (

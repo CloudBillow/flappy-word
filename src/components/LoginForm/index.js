@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import styles from './LoginForm.module.css'
 import { useGameContext } from '../../context/GameContext'
-import UserStorage from '../../utils/storage'
+import { getUserInfo } from '../../utils/storage'
 import MyAlert from '../MyAlert'
 
 const LoginForm = () => {
@@ -15,7 +15,7 @@ const LoginForm = () => {
   }, [])
 
   const checkLogin = async() => {
-    const userInfo = UserStorage.getUserInfo()
+    const userInfo = getUserInfo()
     if (userInfo != null) {
       changeGameStatus(GameStatus.NOT_STARTED)
       return true

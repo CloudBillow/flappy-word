@@ -3,13 +3,15 @@ import styles from './RankList.module.css'
 import RankItem from '../RankItem'
 import { get, apiPaths } from '../../../api/api'
 import MyRank from '../MyRank'
+import { useGameContext } from '../../../context/GameContext'
 
 const RankList = ({isOpen, onClose}) => {
 
   const [dataList, setDataList] = useState([])
+  const {isLogin} = useGameContext()
 
   useEffect(() => {
-    if (isOpen) {
+    if (isOpen && isLogin()) {
       get(apiPaths.RANK_LIST)
           .then((data) => {
             setDataList(data.records)

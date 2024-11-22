@@ -2,7 +2,7 @@ import React, { useEffect } from 'react'
 import styles from './GameOver.module.css'
 import ForStart from '../ForStart'
 import { post, apiPaths } from '../../../api/api'
-import UserStorage from '../../../utils/storage'
+import { getUserInfo } from '../../../utils/storage'
 import { encrypt } from '../../../utils/crypto';
 
 const GameOver = ({ score, passedCount, userAction }) => {
@@ -11,7 +11,7 @@ const GameOver = ({ score, passedCount, userAction }) => {
     let isSubscribed = true
 
     const uploadScore = async () => {
-      const userInfo = UserStorage.getUserInfo()
+      const userInfo = getUserInfo()
       if (!userInfo?.userId) {
         console.warn('未找到用户信息')
         return

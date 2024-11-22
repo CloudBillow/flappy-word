@@ -1,5 +1,5 @@
 import axios from 'axios'
-import UserStorage from '../utils/storage'
+import { clearUserInfo, getUserInfo, saveUserInfo } from '../utils/storage'
 import MyAlert from '../components/MyAlert'
 
 const apiClient = axios.create({
@@ -13,8 +13,8 @@ const apiClient = axios.create({
 // 请求拦截器
 apiClient.interceptors.request.use(
     (config) => {
-      if (UserStorage.getUserInfo()) {
-        config.headers['Authorization'] = 'Bearer ' + UserStorage.getUserInfo().token
+      if (getUserInfo()) {
+        config.headers['Authorization'] = 'Bearer ' + getUserInfo().token
       }
       return config
     },
@@ -25,21 +25,22 @@ apiClient.interceptors.request.use(
 
 apiClient.interceptors.response.use(
     async(response) => {
+
       // 处理 token 过期
       if (response.data.code === 40003) {
         try {
-          const userInfo = UserStorage.getUserInfo()
+          const userInfo = getUserInfo()
           if (!userInfo?.name || !userInfo?.code) {
             return Promise.reject('登录信息已失效')
           }
 
           // 重新登录
           const data = await post(apiPaths.REFRESH_TOKEN, {
-            refreshToken: userInfo.refreshToken,
+            refreshToken: userInfo.refreshToken
           })
 
           // 更新存储的用户信息
-          UserStorage.saveUserInfo({
+          saveUserInfo({
             ...userInfo,
             refreshToken: data.token
           })
@@ -57,9 +58,10 @@ apiClient.interceptors.response.use(
         }
       }
 
-      if (response.data.code === 40004) {
+      if (response.data.code === 40004 || response.data.code === 401) {
         // 登录过期退出到登录页
-        UserStorage.clearUserInfo()
+        clearUserInfo()
+        return
       }
 
       // 其他正常响应处理

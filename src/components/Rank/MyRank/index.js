@@ -1,11 +1,23 @@
 import React, { useEffect, useState } from 'react'
 import styles from './MyRank.module.css'
 import { apiPaths, get } from '../../../api/api'
-import UserStorage from '../../../utils/storage'
+import { getUserInfo } from '../../../utils/storage'
+import { useGameContext } from '../../../context/GameContext'
 
 const MyRank = () => {
 
   const [myRank, setMyRank] = useState({})
+  const {GameStatus, changeGameStatus} = useGameContext()
+  const [userName, setUserName] = useState('');
+
+  useEffect(() => {
+    const userInfo = getUserInfo(() => {
+      changeGameStatus(GameStatus.NOT_LOGIN);
+    });
+    if (userInfo) {
+      setUserName(userInfo.name);
+    }
+  }, [changeGameStatus]);
 
   useEffect(() => {
     get(apiPaths.MY_RANK)
@@ -40,7 +52,7 @@ const MyRank = () => {
         <div className={styles.cell}>
           {renderRank()}
         </div>
-        <p className={styles.nameCell}>{UserStorage.getUserInfo().name}</p>
+        <p className={styles.nameCell}>{userName}</p>
         <p className={styles.cell}>{myRank.score || '-'}</p>
         <p className={styles.cell}>{myRank.hurdle || '-'}</p>
       </div>
