@@ -28,6 +28,17 @@ class UserStorage {
       return null
     }
   }
+
+  /**
+   * 登录过期
+   */
+  static clearUserInfo() {
+    try {
+      localStorage.removeItem(this.USER_KEY)
+    } catch(error) {
+      console.error('清除用户信息失败:', error)
+    }
+  }
 }
 
 export default UserStorage

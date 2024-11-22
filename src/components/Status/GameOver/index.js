@@ -3,6 +3,7 @@ import styles from './GameOver.module.css'
 import ForStart from '../ForStart'
 import { post, apiPaths } from '../../../api/api'
 import UserStorage from '../../../utils/storage'
+import { encrypt } from '../../../utils/crypto';
 
 const GameOver = ({ score, passedCount, userAction }) => {
 
@@ -18,11 +19,12 @@ const GameOver = ({ score, passedCount, userAction }) => {
 
       try {
         if (isSubscribed) {
+          const track = encrypt(JSON.stringify(userAction))
           await post(apiPaths.UPLOAD_SCORE, {
             userId: userInfo.userId,
             score: score,
             hurdle: passedCount,
-            userActions: userAction
+            track: track
           })
         }
       } catch (error) {

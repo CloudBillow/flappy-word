@@ -1,21 +1,29 @@
 import { createRoot } from 'react-dom/client';
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import styles from './MyAlert.module.css';
 
 const AlertComponent = ({ message, onClose }) => {
+  const [isClosing, setIsClosing] = useState(false);
+
   useEffect(() => {
     const handleEsc = (e) => {
       if (e.key === 'Escape') {
-        onClose();
+        handleClose();
       }
     };
     window.addEventListener('keydown', handleEsc);
     return () => window.removeEventListener('keydown', handleEsc);
-  }, [onClose]);
+  }, []);
+
+  const handleClose = () => {
+    setIsClosing(true);
+    // 等待动画完成后再移除组件
+    setTimeout(onClose, 300); // 300ms 要和 CSS 动画时间一致
+  };
 
   return (
       <div className={styles.alertContainer}>
-        <div className={styles.alertContent}>
+        <div className={`${styles.alertContent} ${isClosing ? styles.hide : ''}`}>
           {message}
         </div>
       </div>
@@ -47,6 +55,16 @@ const MyAlert = (message) => {
       resolve();
     };
 
+    const startClose = () => {
+      const alertInstance = document.querySelector('[class*="alertContent"]');
+      if (alertInstance) {
+        alertInstance.classList.add(styles.hide);
+        setTimeout(handleClose, 300); // 等待动画完成
+      } else {
+        handleClose();
+      }
+    };
+
     root.render(
         <AlertComponent
             message={message}
@@ -55,7 +73,7 @@ const MyAlert = (message) => {
     );
 
     activeAlert = root;
-    activeTimeout = setTimeout(handleClose, 2000);
+    activeTimeout = setTimeout(startClose, 2000);
   });
 };
 

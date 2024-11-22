@@ -5,6 +5,7 @@ module.exports = function (app) {
       '/api',
       createProxyMiddleware({
         target: 'http://117.72.53.38', // 目标服务器地址
+        // target: 'http://127.0.0.1:9001', // 目标服务器地址
         changeOrigin: true,
         pathRewrite: {
           '^/api': '', // 去除 `/api` 前缀

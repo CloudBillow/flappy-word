@@ -29,7 +29,7 @@ const LoginForm = () => {
       return
     }
     if (code.length !== 6) {
-      await MyAlert('请确保凭证为6位数字！')
+      await MyAlert('请确保校验码为6位数字')
       return
     }
     if (name.length > 10) {
@@ -65,7 +65,7 @@ const LoginForm = () => {
                 onChange={(e) =>
                     e.target.value.length <= 6 && setCode(e.target.value)
                 }
-                placeholder="输入6位数字作为登录凭证"
+                placeholder="输入6位数字作为登录校验码"
                 className={styles.input}
             />
 

@@ -26,40 +26,40 @@ apiClient.interceptors.request.use(
 apiClient.interceptors.response.use(
     async(response) => {
       // 处理 token 过期
-      if (response.data.code === 401) {
+      if (response.data.code === 40003) {
         try {
           const userInfo = UserStorage.getUserInfo()
           if (!userInfo?.name || !userInfo?.code) {
-            await MyAlert('登录信息已失效，请重新登录')
             return Promise.reject('登录信息已失效')
           }
 
           // 重新登录
-          const loginData = await post(apiPaths.LOGIN, {
-            username: userInfo.name,
-            code: userInfo.code
+          const data = await post(apiPaths.REFRESH_TOKEN, {
+            refreshToken: userInfo.refreshToken,
           })
 
           // 更新存储的用户信息
           UserStorage.saveUserInfo({
-            name: userInfo.name,
-            code: userInfo.code,
-            userId: loginData.userId,
-            token: loginData.token
+            ...userInfo,
+            refreshToken: data.token
           })
 
           // 使用新 token 重试原始请求
           const config = response.config
-          config.headers['Authorization'] = 'Bearer ' + loginData.token
+          config.headers['Authorization'] = 'Bearer ' + data.token
           // 重试请求
           console.log('重新登录中...')
           return apiClient(config)
 
         } catch(error) {
           console.error('重新登录失败:', error)
-          await MyAlert('重新登录失败，请刷新页面重试')
           return Promise.reject(error)
         }
+      }
+
+      if (response.data.code === 40004) {
+        // 登录过期退出到登录页
+        UserStorage.clearUserInfo()
       }
 
       // 其他正常响应处理
@@ -81,7 +81,8 @@ const API_PATHS = {
   RANK_LIST: '/flappyword/ranking',
   LOGIN: '/flappyword/login',
   UPLOAD_SCORE: '/flappyword/ranking',
-  MY_RANK: '/flappyword/ranking/current'
+  MY_RANK: '/flappyword/ranking/current',
+  REFRESH_TOKEN: '/flappyword/login/refreshToken'
 }
 
 export const post = (url, data) => apiClient.post(url, data)

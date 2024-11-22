@@ -32,7 +32,8 @@ export const GameProvider = ({children}) => {
         name: name,
         code: code,
         userId: data.userId,
-        token: data.token
+        token: data.token,
+        refreshToken: data.refreshToken
       })
       changeGameStatus(GameStatus.NOT_STARTED)
       return true
