@@ -17,12 +17,12 @@ const GameOver = ({ score, passedCount, userAction }) => {
       }
 
       try {
-        console.log(userAction)
         if (isSubscribed) {
           await post(apiPaths.UPLOAD_SCORE, {
             userId: userInfo.userId,
             score: score,
-            hurdle: passedCount
+            hurdle: passedCount,
+            userActions: userAction
           })
         }
       } catch (error) {

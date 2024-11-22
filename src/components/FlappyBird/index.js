@@ -22,7 +22,7 @@ const SPEED_INCREASE = 0.01
 const SCORE_TO_INCREASE_SPEED = 6
 
 const FlappyBird = () => {
-  const { GameStatus, currentGameStatus, changeGameStatus } = useGameContext()
+  const {GameStatus, currentGameStatus, changeGameStatus} = useGameContext()
 
   // 游戏状态存储
   const gameStateRef = useRef({
@@ -33,7 +33,7 @@ const FlappyBird = () => {
   const [letter, setLetter] = useState(getRandomLetter())
   const [birdPosition, setBirdPosition] = useState(GAME_HEIGHT / 2 - 80)
   const [birdVelocity, setBirdVelocity] = useState(0)
-  const [pipes, setPipes] = useState([{ position: INITIAL_PIPE_POSITION, height: 300 }])
+  const [pipes, setPipes] = useState([{position: INITIAL_PIPE_POSITION, height: 300}])
   const [score, setScore] = useState(0)
   const [throughCount, setThroughCount] = useState(0)
   const [countdown, setCountdown] = useState(3)
@@ -51,7 +51,7 @@ const FlappyBird = () => {
   const addPipe = useCallback(() => {
     const dislocation = Math.random() * 160 + 20
     const pipeHeight = Math.random() * (GAME_HEIGHT - PIPE_GAP - 200) + dislocation
-    setPipes(pipes => [...pipes, { position: GAME_WIDTH, height: pipeHeight }])
+    setPipes(pipes => [...pipes, {position: GAME_WIDTH, height: pipeHeight}])
   }, [])
 
   // 处理游戏结束的逻辑
@@ -70,10 +70,11 @@ const FlappyBird = () => {
     gameStateRef.current.isGameOver = false
     setBirdPosition(GAME_HEIGHT / 2 - 80)
     setBirdVelocity(0)
-    setPipes([{ position: INITIAL_PIPE_POSITION, height: 300 }])
+    setPipes([{position: INITIAL_PIPE_POSITION, height: 300}])
     setScore(0)
     setThroughCount(0)
     setCountdown(3)
+    setUserAction([])
 
     // 使用 setTimeout 延迟状态更新
     setTimeout(() => {
@@ -89,11 +90,12 @@ const FlappyBird = () => {
       const newLetter = getRandomLetter()
       setLetter(newLetter)
       // 用户行为
-      setUserAction(prev => [...prev, {
+      const action = {
         action: 'jump',
         letter: newLetter,
         time: new Date().getTime()
-      }])
+      }
+      setUserAction(prev => [...prev, action])
     }
   }, [currentGameStatus])
 
@@ -161,14 +163,14 @@ const FlappyBird = () => {
         const BIRD_LEFT = 50
 
         const newPipes = prevPipes
-            .map(pipe => ({ ...pipe, position: pipe.position - currentPipeSpeed }))
+            .map(pipe => ({...pipe, position: pipe.position - currentPipeSpeed}))
             .filter(pipe => pipe.position > -PIPE_WIDTH)
 
         // 碰撞检测
         const birdRight = BIRD_LEFT + BIRD_SIZE
         const birdBottom = birdPosition + BIRD_SIZE
 
-        for (let pipe of newPipes) {
+        for(let pipe of newPipes) {
           if (
               birdRight > pipe.position &&
               BIRD_LEFT < pipe.position + PIPE_WIDTH &&
@@ -191,10 +193,11 @@ const FlappyBird = () => {
           setTimeout(() => {
             setScore(prevScore => prevScore + 3)
             setThroughCount(prevCount => prevCount + 1)
-            setUserAction(prev => [...prev, {
+            const action = {
               action: 'through',
               time: new Date().getTime()
-            }])
+            }
+            setUserAction(prev => [...prev, action])
           }, 0)
         }
 
@@ -216,7 +219,7 @@ const FlappyBird = () => {
   return (
       <div>
         <div className={styles.gameElements}>
-          <Bird letter={letter} top={birdPosition} />
+          <Bird letter={letter} top={birdPosition}/>
           {pipes.map((pipe, index) => (
               <React.Fragment key={index}>
                 <Pipe
@@ -243,13 +246,13 @@ const FlappyBird = () => {
                 <span>穿过: {throughCount}</span>
               </div>
           )}
-          {currentGameStatus === GameStatus.NOT_STARTED && <Title />}
-          {currentGameStatus === GameStatus.COUNTDOWN && <Countdown count={countdown} />}
+          {currentGameStatus === GameStatus.NOT_STARTED && <Title/>}
+          {currentGameStatus === GameStatus.COUNTDOWN && <Countdown count={countdown}/>}
           {currentGameStatus === GameStatus.GAME_OVER && (
-              <GameOver score={score} passedCount={throughCount} userAction={userAction} />
+              <GameOver score={score} passedCount={throughCount} userAction={userAction}/>
           )}
           {currentGameStatus === GameStatus.NOT_STARTED && (
-              <ForStart className={styles.startGame} message={'按下空格开始游戏...'} />
+              <ForStart className={styles.startGame} message={'按下空格开始游戏...'}/>
           )}
         </div>
       </div>
