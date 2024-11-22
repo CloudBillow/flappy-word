@@ -42,7 +42,7 @@ apiClient.interceptors.response.use(
           // 更新存储的用户信息
           saveUserInfo({
             ...userInfo,
-            refreshToken: data.token
+            token: data.token
           })
 
           // 使用新 token 重试原始请求
