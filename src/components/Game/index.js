@@ -5,6 +5,7 @@ import RankList from '../Rank/RankList'
 import RankButton from '../Rank/RankButton'
 import { useGameContext } from '../../context/GameContext'
 import LoginForm from '../LoginForm'
+import CloudsContainer from '../CloudsContainer'
 
 const Game = () => {
   const [isModalOpen, setIsModalOpen] = useState(false)
@@ -27,6 +28,7 @@ const Game = () => {
             <LoginForm />
         ) : (
             <>
+              <CloudsContainer/>
               {shouldShowRankButton && (
                   <RankButton onClick={() => toggleModal(true)} />
               )}

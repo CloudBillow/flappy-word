@@ -1,0 +1,42 @@
+.cloud {
+  position: absolute;
+  width: 100px;
+  height: 30px;
+  background: rgb(223, 251, 255);
+  border-radius: 20px;
+  animation: float linear infinite;
+  pointer-events: none;
+  box-shadow: 0 4px 4px rgba(0, 0, 0, 0.1);
+  will-change: transform;
+}
+
+.cloud::before,
+.cloud::after {
+  content: '';
+  position: absolute;
+  background: inherit;
+  border-radius: 50%;
+}
+
+.cloud::before {
+  width: 45px;
+  height: 45px;
+  top: -20px;
+  left: 20px;
+}
+
+.cloud::after {
+  width: 35px;
+  height: 35px;
+  top: -15px;
+  left: 50px;
+}
+
+@keyframes float {
+  0% {
+    transform: translateX(-120px); /* 从屏幕左侧外开始 */
+  }
+  100% {
+    transform: translateX(500px);  /* 移动到屏幕右侧外 */
+  }
+}
