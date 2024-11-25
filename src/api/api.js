@@ -61,7 +61,7 @@ apiClient.interceptors.response.use(
       if (response.data.code === 40004 || response.data.code === 401) {
         // 登录过期退出到登录页
         clearUserInfo()
-        await MyAlert(response.data.message)
+        await MyAlert('登录已过期，请重新登录')
         return
       }
 

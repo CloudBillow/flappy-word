@@ -1,12 +1,10 @@
-import React, { createContext, useContext, useState } from 'react'
-import { apiPaths, post } from '../api/api'
+import React, { createContext, useContext, useState, useEffect } from 'react'
 import { getUserInfo, saveUserInfo } from '../utils/storage'
+import { apiPaths, post } from '../api/api'
 
 const GameContext = createContext(null)
 
 export const GameProvider = ({children}) => {
-
-  // 游戏状态
   const GameStatus = {
     NOT_LOGIN: -1,
     NOT_STARTED: 0,
@@ -18,7 +16,31 @@ export const GameProvider = ({children}) => {
   const [currentGameStatus, setGameStatus] = useState(GameStatus.NOT_LOGIN)
   const [isLogin, setIsLogin] = useState(false)
 
+  // 在 context 中添加登录状态检查
+  const checkLoginStatus = () => {
+    const userInfo = getUserInfo()
+    if (!userInfo) {
+      setIsLogin(false)
+      setGameStatus(GameStatus.NOT_LOGIN)
+      return false
+    }
+    setIsLogin(true)
+    if (currentGameStatus === GameStatus.NOT_LOGIN) {
+      setGameStatus(GameStatus.NOT_STARTED)
+    }
+    return true
+  }
+
+  // 组件挂载时和状态更新时检查登录状态
+  useEffect(() => {
+    checkLoginStatus()
+  }, [])
+
   const changeGameStatus = (newStatus) => {
+    // 在改变游戏状态时检查登录状态
+    if (newStatus !== GameStatus.NOT_LOGIN && !checkLoginStatus()) {
+      return
+    }
     setGameStatus(newStatus)
   }
 
@@ -28,7 +50,6 @@ export const GameProvider = ({children}) => {
         username: name,
         code: code
       })
-      // 登录成功后保存用户信息
       saveUserInfo({
         name: name,
         code: code,
@@ -37,22 +58,12 @@ export const GameProvider = ({children}) => {
         refreshToken: data.refreshToken
       })
       setIsLogin(true)
-      changeGameStatus(GameStatus.NOT_STARTED)
+      setGameStatus(GameStatus.NOT_STARTED)
       return true
     } catch(e) {
       console.log('登录失败', e)
       return false
     }
-
-  }
-
-  const checkLogin = () => {
-    const userInfo = getUserInfo()
-    if (userInfo == null) {
-      setGameStatus(GameStatus.NOT_LOGIN)
-      setIsLogin(false)
-    }
-    return currentGameStatus !== GameStatus.NOT_LOGIN
   }
 
   const value = {
@@ -60,8 +71,8 @@ export const GameProvider = ({children}) => {
     currentGameStatus,
     changeGameStatus,
     doLogin,
-    checkLogin,
-    isLogin
+    isLogin,
+    checkLoginStatus  // 导出检查函数供组件使用
   }
 
   return (

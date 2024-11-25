@@ -6,14 +6,14 @@ import { getUserInfo } from '../../../utils/storage'
 const MyRank = () => {
 
   const [myRank, setMyRank] = useState({})
-  const [userName, setUserName] = useState('');
+  const [userName, setUserName] = useState('')
 
   useEffect(() => {
-    const userInfo = getUserInfo();
+    const userInfo = getUserInfo()
     if (userInfo) {
-      setUserName(userInfo.name);
+      setUserName(userInfo.name)
     }
-  }, []);
+  }, [])
 
   useEffect(() => {
     get(apiPaths.MY_RANK)

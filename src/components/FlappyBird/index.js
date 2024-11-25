@@ -7,6 +7,8 @@ import ForStart from '../Status/ForStart'
 import Countdown from '../Status/Countdown'
 import Title from '../Title'
 import { useGameContext } from '../../context/GameContext'
+import { getUserInfo } from '../../utils/storage'
+import MyAlert from '../MyAlert'
 
 // 游戏常量
 const GRAVITY = 0.3
@@ -25,7 +27,7 @@ const FlappyBird = () => {
 
   const initLetters = ['A', 'E', 'I', 'O', 'U']
 
-  const {GameStatus, currentGameStatus, changeGameStatus, checkLogin} = useGameContext()
+  const { GameStatus, currentGameStatus, changeGameStatus, checkLoginStatus } = useGameContext()
 
   // 游戏状态存储
   const gameStateRef = useRef({
@@ -86,7 +88,10 @@ const FlappyBird = () => {
 
   // 开始新游戏
   const newGame = useCallback(() => {
-    checkLogin()
+    if (!checkLoginStatus()) {
+      MyAlert('登录已过期，请重新登录')
+      return
+    }
     gameStateRef.current.isGameOver = false
     setBirdPosition(GAME_HEIGHT / 2 - 80)
     setBirdVelocity(0)
