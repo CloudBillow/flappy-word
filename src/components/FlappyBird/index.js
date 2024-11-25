@@ -33,17 +33,27 @@ const FlappyBird = () => {
     shouldStartCountdown: false
   })
 
+  // 字母生成
+  const letterGenerator = useMemo(() => {
+    return {
+      getRandomLetter: (excludeLetters) => {
+        const allLetters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'
+        const availableLetters = allLetters
+            .split('')
+            .filter(letter => !excludeLetters.has(letter))
+        const newLetter = availableLetters[Math.floor(Math.random() * availableLetters.length)]
+        console.log('已经排除字母: ', excludeLetters)
+        console.log('新生成的字母: ', newLetter)
+        return newLetter
+      }
+    }
+  }, [])
+
   const [latestLetters, setLatestLetters] = useState([...initLetters])
+  const [letter, setLetter] = useState(() =>
+      letterGenerator.getRandomLetter(new Set(initLetters))
+  )
 
-  const getRandomLetter = useCallback(() => {
-    const excludeLetters = new Set(latestLetters)
-    console.log('已经排除的字母： ', excludeLetters)
-    const allLetters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'
-    const availableLetters = allLetters.split('').filter(letter => !excludeLetters.has(letter))
-    return availableLetters[Math.floor(Math.random() * availableLetters.length)]
-  }, [latestLetters])
-
-  const [letter, setLetter] = useState(getRandomLetter())
   const [birdPosition, setBirdPosition] = useState(GAME_HEIGHT / 2 - 80)
   const [birdVelocity, setBirdVelocity] = useState(0)
   const [pipes, setPipes] = useState([{position: INITIAL_PIPE_POSITION, height: 300}])
@@ -105,13 +115,11 @@ const FlappyBird = () => {
       }
       setUserAction(prev => [...prev, action])
 
-      // 跳跃后设置亲字母
-      const newLetter = getRandomLetter()
+      const newLetter = letterGenerator.getRandomLetter(new Set(latestLetters))
       setLetter(newLetter)
       setLatestLetters(prev => [newLetter, ...prev].slice(0, 5))
     }
-
-  }, [currentGameStatus, GameStatus.PLAYING, getRandomLetter, letter])
+  }, [currentGameStatus, GameStatus.PLAYING, letter, latestLetters, letterGenerator])
 
   // 键盘事件监听
   useEffect(() => {
