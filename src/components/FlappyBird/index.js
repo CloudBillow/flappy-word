@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState, useRef, useMemo } from 'react'
+import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import styles from './FlappyBird.module.css'
 import Bird from '../Bird'
 import Pipe from '../Pipe'
@@ -25,7 +25,7 @@ const FlappyBird = () => {
 
   const initLetters = ['A', 'E', 'I', 'O', 'U']
 
-  const {GameStatus, currentGameStatus, changeGameStatus} = useGameContext()
+  const {GameStatus, currentGameStatus, changeGameStatus, checkLogin} = useGameContext()
 
   // 游戏状态存储
   const gameStateRef = useRef({
@@ -41,10 +41,7 @@ const FlappyBird = () => {
         const availableLetters = allLetters
             .split('')
             .filter(letter => !excludeLetters.has(letter))
-        const newLetter = availableLetters[Math.floor(Math.random() * availableLetters.length)]
-        console.log('已经排除字母: ', excludeLetters)
-        console.log('新生成的字母: ', newLetter)
-        return newLetter
+        return availableLetters[Math.floor(Math.random() * availableLetters.length)]
       }
     }
   }, [])
@@ -89,6 +86,7 @@ const FlappyBird = () => {
 
   // 开始新游戏
   const newGame = useCallback(() => {
+    checkLogin()
     gameStateRef.current.isGameOver = false
     setBirdPosition(GAME_HEIGHT / 2 - 80)
     setBirdVelocity(0)

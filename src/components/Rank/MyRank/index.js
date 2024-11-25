@@ -2,22 +2,18 @@ import React, { useEffect, useState } from 'react'
 import styles from './MyRank.module.css'
 import { apiPaths, get } from '../../../api/api'
 import { getUserInfo } from '../../../utils/storage'
-import { useGameContext } from '../../../context/GameContext'
 
 const MyRank = () => {
 
   const [myRank, setMyRank] = useState({})
-  const {GameStatus, changeGameStatus} = useGameContext()
   const [userName, setUserName] = useState('');
 
   useEffect(() => {
-    const userInfo = getUserInfo(() => {
-      changeGameStatus(GameStatus.NOT_LOGIN);
-    });
+    const userInfo = getUserInfo();
     if (userInfo) {
       setUserName(userInfo.name);
     }
-  }, [changeGameStatus]);
+  }, []);
 
   useEffect(() => {
     get(apiPaths.MY_RANK)

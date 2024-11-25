@@ -8,13 +8,15 @@ import { useGameContext } from '../../../context/GameContext'
 const RankList = ({isOpen, onClose}) => {
 
   const [dataList, setDataList] = useState([])
-  const {isLogin} = useGameContext()
+  const {checkLogin} = useGameContext()
 
   useEffect(() => {
-    if (isOpen && isLogin()) {
+    if (isOpen && checkLogin()) {
       get(apiPaths.RANK_LIST)
           .then((data) => {
-            setDataList(data.records)
+            if (data && data.records) {
+              setDataList(data.records)
+            }
           })
     }
   }, [isOpen])

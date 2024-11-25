@@ -16,6 +16,7 @@ export const GameProvider = ({children}) => {
   }
 
   const [currentGameStatus, setGameStatus] = useState(GameStatus.NOT_LOGIN)
+  const [isLogin, setIsLogin] = useState(false)
 
   const changeGameStatus = (newStatus) => {
     setGameStatus(newStatus)
@@ -35,6 +36,7 @@ export const GameProvider = ({children}) => {
         token: data.token,
         refreshToken: data.refreshToken
       })
+      setIsLogin(true)
       changeGameStatus(GameStatus.NOT_STARTED)
       return true
     } catch(e) {
@@ -44,10 +46,11 @@ export const GameProvider = ({children}) => {
 
   }
 
-  const isLogin = () => {
+  const checkLogin = () => {
     const userInfo = getUserInfo()
     if (userInfo == null) {
       setGameStatus(GameStatus.NOT_LOGIN)
+      setIsLogin(false)
     }
     return currentGameStatus !== GameStatus.NOT_LOGIN
   }
@@ -57,6 +60,7 @@ export const GameProvider = ({children}) => {
     currentGameStatus,
     changeGameStatus,
     doLogin,
+    checkLogin,
     isLogin
   }
 

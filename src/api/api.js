@@ -61,6 +61,7 @@ apiClient.interceptors.response.use(
       if (response.data.code === 40004 || response.data.code === 401) {
         // 登录过期退出到登录页
         clearUserInfo()
+        await MyAlert(response.data.message)
         return
       }
 
@@ -75,7 +76,7 @@ apiClient.interceptors.response.use(
     },
     (error) => {
       console.error('API 请求失败:', error.response || error.message)
-      return Promise.reject(error)
+      MyAlert('系统异常')
     }
 )
 
