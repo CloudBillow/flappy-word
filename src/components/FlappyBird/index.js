@@ -49,10 +49,13 @@ const FlappyBird = () => {
     }
   }, [])
 
-  const [latestLetters, setLatestLetters] = useState([...initLetters])
-  const [letter, setLetter] = useState(() =>
-      letterGenerator.getRandomLetter(new Set(initLetters))
-  )
+  const [latestLetters, setLatestLetters] = useState(() => {
+    const initialSet = new Set(initLetters)
+    const firstLetter = letterGenerator.getRandomLetter(initialSet)
+    return [firstLetter, ...initLetters].slice(0, 5)
+  })
+
+  const [letter, setLetter] = useState(() => letterGenerator.getRandomLetter(new Set(latestLetters)))
 
   const [birdPosition, setBirdPosition] = useState(GAME_HEIGHT / 2 - 80)
   const [birdVelocity, setBirdVelocity] = useState(0)
@@ -107,6 +110,7 @@ const FlappyBird = () => {
     if (currentGameStatus === GameStatus.PLAYING) {
       setBirdVelocity(JUMP_STRENGTH)
       setScore(prevScore => prevScore + 1)
+
       // 用户行为
       const action = {
         action: 'jump',
@@ -115,11 +119,15 @@ const FlappyBird = () => {
       }
       setUserAction(prev => [...prev, action])
 
-      const newLetter = letterGenerator.getRandomLetter(new Set(latestLetters))
-      setLetter(newLetter)
-      setLatestLetters(prev => [newLetter, ...prev].slice(0, 5))
+      // 先更新 latestLetters，确保包含当前 letter
+      setLatestLetters(prev => {
+        const currentSet = new Set([letter, ...prev].slice(0, 5))
+        const newLetter = letterGenerator.getRandomLetter(currentSet)
+        setLetter(newLetter) // 在这里设置新字母
+        return [newLetter, letter, ...prev].slice(0, 5) // 确保包含新字母和当前字母
+      })
     }
-  }, [currentGameStatus, GameStatus.PLAYING, letter, latestLetters, letterGenerator])
+  }, [currentGameStatus, GameStatus.PLAYING, letter, letterGenerator])
 
   // 键盘事件监听
   useEffect(() => {
